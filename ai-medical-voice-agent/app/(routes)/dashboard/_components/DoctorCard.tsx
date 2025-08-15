@@ -5,6 +5,7 @@ import { IconArrowRight } from "@tabler/icons-react";
  export  type doctorAgent = {
     id: number;
     specialist: string;
+    agentName?: string;
     description: string;
     image: string;
     agentPrompt: string;

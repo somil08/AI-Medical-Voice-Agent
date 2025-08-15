@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
 import { db } from "@/config/db";
 import { eq } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 
 
 export async function POST(req: NextRequest) {
@@ -46,9 +47,18 @@ export async function GET(req: NextRequest) {
     const sessionId = searchParams.get("sessionId");
     const user = await currentUser();
 
+  if(sessionId == 'all'){
+    const result = await db.select().from(SessionChatTable)
+    // @ts-ignore
+    .where(eq(SessionChatTable.createdBy,user?.primaryEmailAddress?.emailAddress))
+    .orderBy(desc(SessionChatTable.id))
+
+    return NextResponse.json(result);
+  }else{
     const result = await db.select().from(SessionChatTable)
     // @ts-ignore
     .where(eq(SessionChatTable.sessionId,sessionId))
 
     return NextResponse.json(result[0]);
+  }
 }

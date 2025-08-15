@@ -2,10 +2,24 @@
 import React from "react";
 import { useState } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { SessionDetails }from "../medical-agent/[sessionId]/page";
+   
 import AddNewSession from "./AddNewSession";
+import HistoryTable from "./HistoryTable";
+
 function HistoryList() {    
-    const [history, setHistory] = useState([]);
+    const [history, setHistory] = useState<SessionDetails[]>([]);
+
+    React.useEffect(() => {
+      GetHistoryList();
+    }, []);
+    const GetHistoryList = async () => {
+      const res = await fetch("/api/session-chat?sessionId=all");
+      const data = await res.json();  
+      console.log("result", data);
+      setHistory(data);
+    };
+    
   return (
     <div className="mt-10">
 {history.length == 0 ? 
@@ -16,7 +30,7 @@ function HistoryList() {
 <AddNewSession />
 </div>:
 <div>
-    List
+    <HistoryTable history={history}/>
 </div>
 }
 
